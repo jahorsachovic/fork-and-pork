@@ -11,6 +11,7 @@ public class Inspector : Employee
         {
             // if ()
             // TODO
+            _licenseId = value;
         }
     }
 }
