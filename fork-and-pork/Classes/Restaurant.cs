@@ -5,6 +5,8 @@ namespace fork_and_pork.Classes;
 public class Restaurant
 {
     public string Address { get; private set; }
+
+    // Complex Attribute
     public SortedDictionary<DayOfWeek, (TimeOnly, TimeOnly)> WorkingHours { get; private set; }
     
     // Associations 
