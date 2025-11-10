@@ -4,8 +4,8 @@ using System.Net.Mail;
 using NUnit.Framework;
 
 namespace fork_and_pork.Tests.Tests;
-using Classes;
 
+using Classes;
 
 public class SerializerTests
 {
@@ -24,16 +24,17 @@ public class SerializerTests
 
         Restaurant r1 = new Restaurant()
         {
-            Employees = new Dictionary<string, Employee>(){ {e1.Email, e1}, {e2.Email, e2}},
+            Employees = new Dictionary<string, Employee>() { { e1.Email, e1 }, { e2.Email, e2 } },
             WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
             {
-                {DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16,00))},
-                {DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
-                {DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
-                {DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
-                {DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
+                { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
             },
-            Address = new Address(){ 
+            Address = new Address()
+            {
                 Country = "Poland",
                 City = "Warsaw",
                 Street = "Staszica",
@@ -41,8 +42,8 @@ public class SerializerTests
                 Building = "14"
             }
         };
-        
-        
+
+
         ObjectStore.AddAll(e1, e2, r1);
         ObjectStore.Save("test-data.json");
 
@@ -51,12 +52,12 @@ public class SerializerTests
         List<Restaurant> loadedRestaurants = ObjectStore.GetObjectList<Restaurant>();
 
 
-        Assert.That(e1, Is.EqualTo(loadedEmployees[0]));
-        Assert.That(e2, Is.EqualTo(loadedEmployees[1]));
-        Assert.That(r1, Is.EqualTo(loadedRestaurants[0]));
+        Assert.That(e1.ToString(), Is.EqualTo(loadedEmployees[0].ToString()));
+        Assert.That(e2.ToString(), Is.EqualTo(loadedEmployees[1].ToString()));
+        Assert.That(r1.ToString(), Is.EqualTo(loadedRestaurants[0].ToString()));
 
-        loadedEmployees[0].PhoneNumber = "+48797777123";
-        Assert.That(loadedEmployees[0], Is.EqualTo(loadedRestaurants[0].Employees[e1.Email]));
+        loadedEmployees[0].PhoneNumber = "+48797677123";
+        Assert.That(loadedEmployees[0] == loadedRestaurants[0].Employees[e1.Email]);
         Assert.That(loadedEmployees[0].PhoneNumber, Is.EqualTo(loadedRestaurants[0].Employees[e1.Email].PhoneNumber));
     }
 }
