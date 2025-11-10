@@ -11,7 +11,7 @@ public enum ProductType
 
 public class Product
 {
-    public ProductType ProductType { get; private set; }
+    public ProductType ProductType { get; set; }
 
 //    private Product(ProductType productType)
 //   {

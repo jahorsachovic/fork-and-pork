@@ -11,7 +11,7 @@ public class MenuItem
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentException("Item Name cannot be empty or just whitespace.");
+                throw new ArgumentException("MenuItem Name cannot be empty or just whitespace.");
             }
 
             _name = value;
@@ -29,6 +29,8 @@ public class MenuItem
             {
                 throw new ArgumentException("MenuItem cannot have less than 0 calories.");
             }
+
+            _calories = value;
         }
     }
 
@@ -43,6 +45,8 @@ public class MenuItem
             {
                 throw new ArgumentException("Price cannot be negative.");
             }
+
+            _price = value;
         }
     }
 

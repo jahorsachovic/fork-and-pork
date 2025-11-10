@@ -56,7 +56,7 @@ public class Employee
     public DateTime BirthDate
     {
         get => _birthDate;
-        private set
+        set
         {
             if (value > DateTime.Now)
             {
@@ -72,7 +72,7 @@ public class Employee
     public DateTime HireDate
     {
         get => _hireDate;
-        private set
+        set
         {
             if (value > DateTime.Now)
             {
@@ -121,9 +121,9 @@ public class Employee
     }
 
     // Complex attribute
-    public MailAddress Email { get; private set; }
+    public string Email { get; set; }
 
-    public Occupation Occupation { get; private set; }
+    public Occupation Occupation { get; set; }
     private float _salary;
 
     public float Salary
@@ -133,15 +133,17 @@ public class Employee
         {
             if (value < 0)
             {
-                throw new ArgumentException("Salary cannot be less than 0");
+                throw new ArgumentException("Salary cannot be less than 0.");
             }
+
+            _salary = value;
         }
     }
 
     // Associations
-    public List<Vacation> Vacations { get; private set; }
+    public List<Vacation> Vacations { get; set; }
 
-    public static Employee Add(string name, string surname, DateTime birthDate, string phoneNumber, MailAddress email,
+    public static Employee Add(string name, string surname, DateTime birthDate, string phoneNumber, string email,
         Occupation occupation, float salary)
     {
         return new Employee
@@ -181,6 +183,11 @@ public class Employee
 
     public override string ToString()
     {
-        return $"{Name} {Surname} | {Occupation} \nBirthDate: {BirthDate} \n Salary: {Salary}";
+        return $"{Name} {Surname} {Occupation} \nBirthDate: {BirthDate} \nSalary: {Salary}";
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return base.Equals(obj);
     }
 }

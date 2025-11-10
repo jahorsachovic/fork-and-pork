@@ -18,16 +18,16 @@ public class Combo
     
     // Derived
     public float Calories => Items.Sum(i => i.Calories); //moved here
-    public float Price { get; private set; }
+    public float Price { get; set; }
     //Associations
-    public List<MenuItem> Items { get; private set; }
+    public List<MenuItem> Items { get; set; }
 
-    public Combo(string name, float calories, float price)
+    public Combo(string name, float price)
     {
         Name = name;
         //foreach (MenuItem menuItem in Items)
         //{ }
-
+        Items = new List<MenuItem>();
         // Calories = Items.Sum(i => i.Calories); 
         Price = price;
     }

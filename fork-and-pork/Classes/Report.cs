@@ -7,10 +7,10 @@ public enum Grade
 
 public class Report
 {
-    public DateTime StartDate { get; private set; }
-    public DateTime FinishDate { get; private set; }
-    public string Notes { get; private set; }
-    public Grade Grade { get; private set; }
+    public DateTime StartDate { get; set; }
+    public DateTime FinishDate { get; set; }
+    public string Notes { get; set; }
+    public Grade Grade { get; set; }
 
     public static Report SubmitReport(DateTime startDate, DateTime finishDate, string notes, Grade grade)
     {
