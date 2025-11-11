@@ -30,6 +30,22 @@ public static class ObjectStore
 
         items.Add(obj);
     }
+    
+    public static void Add<TBase>(object obj)
+    {
+        Type targetType = typeof(TBase);
+
+        if (!targetType.IsAssignableFrom(obj.GetType()))
+            throw new ArgumentException($"{obj.GetType().Name} is not assignable to {targetType.Name}");
+
+        if (!_store.TryGetValue(targetType, out List<object> items))
+        {
+            items = new List<object>();
+            _store[targetType] = items;
+        }
+
+        items.Add(obj);
+    }
 
     public static void AddAll(params object[] items)
     {
