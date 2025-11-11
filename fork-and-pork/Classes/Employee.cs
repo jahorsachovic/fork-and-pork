@@ -15,6 +15,13 @@ public class Vacation
 {
     public DateTime StartDate { get; set; }
     public DateTime FinishDate { get; set; }
+
+    public Vacation(DateTime startDate, DateTime finishDate)
+    {
+        StartDate = startDate;
+        FinishDate = finishDate;
+        ObjectStore.Add(this);
+    }
 }
 
 public class Employee
@@ -116,6 +123,7 @@ public class Employee
             {
                 throw new FormatException("Phone Number should start with '+' symbol.");
             }
+
             _phoneNumber = value;
         }
     }
@@ -124,6 +132,7 @@ public class Employee
     public string Email { get; set; }
 
     public Occupation Occupation { get; set; }
+
     private float _salary;
 
     public float Salary
@@ -143,20 +152,24 @@ public class Employee
     // Associations
     public List<Vacation> Vacations { get; set; }
 
+    public Employee(string name, string surname, DateTime birthDate, string phoneNumber, string email,
+        Occupation occupation, float salary)
+    {
+        Name = name;
+        Surname = surname;
+        BirthDate = birthDate;
+        PhoneNumber = phoneNumber;
+        Email = email;
+        Occupation = occupation;
+        Salary = salary;
+        ObjectStore.Add<Employee>(this);
+    }
+
     public static Employee Add(string name, string surname, DateTime birthDate, string phoneNumber, string email,
         Occupation occupation, float salary)
     {
-        return new Employee
-        {
-            Name = name,
-            Surname = surname,
-            BirthDate = birthDate,
-            HireDate = DateTime.Now,
-            PhoneNumber = phoneNumber,
-            Email = email,
-            Occupation = occupation,
-            Salary = salary
-        };
+        var emp = new Employee(name, surname, birthDate, phoneNumber, email, occupation, salary);
+        return emp;
     }
 
     public void Fire()
@@ -172,7 +185,7 @@ public class Employee
 
     public void AddVacation(DateTime startDate, DateTime finishDate)
     {
-        Vacations.Add(new Vacation { FinishDate = finishDate, StartDate = startDate });
+        Vacations.Add(new Vacation(startDate, finishDate));
     }
 
     public bool IsOnVacation()

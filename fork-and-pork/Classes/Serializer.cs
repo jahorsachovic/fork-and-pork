@@ -30,7 +30,7 @@ public static class ObjectStore
 
         items.Add(obj);
     }
-    
+
     public static void Add<TBase>(object obj)
     {
         Type targetType = typeof(TBase);

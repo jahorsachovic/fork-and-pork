@@ -14,4 +14,13 @@ public class Inspector : Employee
             _licenseId = value;
         }
     }
+
+    public Inspector(string name, string surname, DateTime birthDate, string phoneNumber, string email,
+        Occupation occupation, float salary, uint licenseId) : base(name, surname, birthDate, phoneNumber, email,
+        occupation,
+        salary)
+    {
+        LicenseId = licenseId;
+        ObjectStore.Add(this);
+    }
 }

@@ -13,17 +13,15 @@ public class Product
 {
     public ProductType ProductType { get; set; }
 
-//    private Product(ProductType productType)
-//   {
-//        ProductType = productType;
-//    }
-    
+    public Product(ProductType productType)
+    {
+        ProductType = productType;
+        ObjectStore.Add(this);
+    }
+
+
     public static Product AddProduct(ProductType productType)
     {
-        return new Product
-        {
-            ProductType = productType
-        };
+        return new Product(productType);
     }
-    
 }

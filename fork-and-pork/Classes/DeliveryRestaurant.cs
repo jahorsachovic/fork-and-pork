@@ -24,7 +24,7 @@ public class DeliveryRestaurant : Restaurant
     {
         get => _deliveryRadius;
         set
-        {   
+        {
             if (value <= 0f || value > 10000f)
             {
                 throw new ArgumentException("DeliveryRadius must be between 0 and 10000.");
@@ -35,9 +35,10 @@ public class DeliveryRestaurant : Restaurant
     }
 
 
-    public DeliveryRestaurant(float deliveryTax, float deliveryRadius)
+    public DeliveryRestaurant(float deliveryTax, float deliveryRadius) : base()
     {
         DeliveryTax = deliveryTax;
         DeliveryRadius = deliveryRadius;
+        ObjectStore.Add(this);
     }
 }

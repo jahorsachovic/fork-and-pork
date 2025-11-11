@@ -15,12 +15,21 @@ public class SupplyRequest
 
     public List<Product> Products { get; set; }
 
- //   private SupplyRequest(DateTime deadlineDate)
- //   {
- //       Status = RequestStatus.Pending;
- //       DeadlineDate = deadlineDate;
- //       
- //   }
+    //   private SupplyRequest(DateTime deadlineDate)
+    //   {
+    //       Status = RequestStatus.Pending;
+    //       DeadlineDate = deadlineDate;
+    //       
+    //   }
+    public SupplyRequest()
+    {
+        ObjectStore.Add(this);
+    }
+
+    public SupplyRequest(DateTime deadlineDate) : this()
+    {
+        DeadlineDate = deadlineDate;
+    }
 
     public static SupplyRequest RequestSupplies(DateTime deadlineDate)
     {
@@ -39,15 +48,13 @@ public class SupplyRequest
 
     public void ReviewRequest(bool isApproved)
     {
-        if(isApproved)
+        if (isApproved)
         {
             ChangeStatus(RequestStatus.Approved);
-        } 
-        else 
+        }
+        else
         {
             ChangeStatus(RequestStatus.Rejected);
         }
-      
     }
-
 }

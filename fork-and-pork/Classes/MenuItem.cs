@@ -36,6 +36,7 @@ public class MenuItem
 
 
     private float _price;
+
     public float Price
     {
         get => _price;
@@ -57,5 +58,6 @@ public class MenuItem
         Name = name;
         Calories = calories;
         Price = price;
+        ObjectStore.Add(this);
     }
 }

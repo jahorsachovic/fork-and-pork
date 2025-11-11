@@ -8,15 +8,16 @@ public class Supplier
     public MailAddress Email { get; set; }
     public string Address { get; set; }
 
-    public static Supplier AddSupplier(string name, MailAddress email, string address)
+    public Supplier(string name, MailAddress email, string address)
     {
-        return new Supplier
-        {
-            Name = name,
-            Email = email,
-            Address = address
-
-        };
+        Name = name;
+        Email = email;
+        Address = address;
+        ObjectStore.Add(this);
     }
 
+    public static Supplier AddSupplier(string name, MailAddress email, string address)
+    {
+        return new Supplier(name, email, address);
+    }
 }
