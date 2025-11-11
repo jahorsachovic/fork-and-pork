@@ -85,8 +85,8 @@ public class ClassesTests
         ex = Assert.Throws<ArgumentException>(() => mi.Price = -0.99f);
         Assert.That(ex.Message, Is.EqualTo("Price cannot be negative."));
     }
-    
-    
+
+
     [Test]
     public void TestCombo()
     {
@@ -104,7 +104,7 @@ public class ClassesTests
     public void TestComboException()
     {
         Combo c = new Combo("Combo1", 12.99f);
-        
+
         Exception ex = Assert.Throws<ArgumentException>(() => c.Name = " ");
         Assert.That(ex.Message, Is.EqualTo("Name cannot be empty or just whitespace."));
     }
@@ -158,16 +158,17 @@ public class ClassesTests
 
         Restaurant r1 = new Restaurant()
         {
-            Employees = new Dictionary<string, Employee>(){ {e1.Email, e1}, {e2.Email, e2}},
+            Employees = new Dictionary<string, Employee>() { { e1.Email, e1 }, { e2.Email, e2 } },
             WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
             {
-                {DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16,00))},
-                {DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
-                {DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
-                {DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
-                {DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00))},
+                { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
             },
-            Address = new Address(){ 
+            Address = new Address()
+            {
                 Country = "Poland",
                 City = "Warsaw",
                 Street = "Staszica",
@@ -180,6 +181,4 @@ public class ClassesTests
         Assert.That(e1 == r1.Employees[e1.Email]);
         Assert.That(r1.WorkingHours[DayOfWeek.Monday].Item1, Is.EqualTo(new TimeOnly(8, 00)));
     }
-        
-
 }
