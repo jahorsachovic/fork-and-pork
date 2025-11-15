@@ -1,35 +1,33 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace fork_and_pork.Classes;
 
 public class DeliveryRestaurant : Restaurant
 {
     private float _deliveryTax;
-
+    
+    [Required]
+    [Range(0f, 1f, ErrorMessage = "DeliveryTax must be between 0 and 1.")]
     public float DeliveryTax
     {
         get => _deliveryTax;
         set
         {
-            if (value < 0f || value > 1f)
-            {
-                throw new ArgumentException("DeliveryTax must be between 0 and 1.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _deliveryTax = value;
         }
     }
 
     private float _deliveryRadius;
 
+    [Required]
+    [Range(0, 5, ErrorMessage = "DeliveryRadius must be between 0 and 5.")]
     public float DeliveryRadius
     {
         get => _deliveryRadius;
         set
         {
-            if (value <= 0f || value > 10000f)
-            {
-                throw new ArgumentException("DeliveryRadius must be between 0 and 10000.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _deliveryRadius = value;
         }
     }

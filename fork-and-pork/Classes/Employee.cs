@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
 namespace fork_and_pork.Classes;
@@ -28,64 +29,54 @@ public class Employee
 {
     private string _name;
 
+    [Required(ErrorMessage = "Name cannot be empty or just whitespace.")]
     public string Name
     {
         get => _name;
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("Name cannot be empty or just whitespace.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _name = value;
         }
     }
 
     private string _surname;
 
+    [Required(ErrorMessage = "Surname cannot be empty or just whitespace.")]
     public string Surname
     {
         get => _surname;
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("Surname cannot be empty or just whitespace.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _surname = value;
         }
     }
 
     private DateTime _birthDate;
-
+    
+    [Required]
+    [NotFutureDate(ErrorMessage = "BirthDate cannot be in the future.")]
     public DateTime BirthDate
     {
         get => _birthDate;
         set
         {
-            if (value > DateTime.Now)
-            {
-                throw new ArgumentException("BirthDate cannot be in the future.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _birthDate = value;
         }
     }
 
     private DateTime _hireDate;
 
+    [Required]
+    [NotFutureDate(ErrorMessage = "HireDate cannot be in the future.")]
     public DateTime HireDate
     {
         get => _hireDate;
         set
         {
-            if (value > DateTime.Now)
-            {
-                throw new ArgumentException("HireDate cannot be in the future.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _hireDate = value;
         }
     }
@@ -93,58 +84,54 @@ public class Employee
     // Optional attribute
     private DateTime? _fireDate;
 
+    [NotFutureDate(ErrorMessage = "FireDate cannot be in the future.")]
     public DateTime? FireDate
     {
         get => _fireDate;
         private set
         {
-            if (value > DateTime.Now)
-            {
-                throw new ArgumentException("FireDate cannot be in the future.");
-            }
-
+            if (value != null) 
+                PropertyValidator.Validate(this, value);
             _fireDate = value;
         }
     }
 
+    
     private string _phoneNumber;
 
+    [Required(ErrorMessage = "Phone Number cannot be empty or just whitespace.")]
+    [Phone]
     public string PhoneNumber
     {
         get => _phoneNumber;
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("Phone Number cannot be empty or just whitespace.");
-            }
-
-            if (!value.StartsWith('+'))
-            {
-                throw new FormatException("Phone Number should start with '+' symbol.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _phoneNumber = value;
         }
     }
 
     // Complex attribute
-    public string Email { get; set; }
-
+    [Required]
+    public MailAddress Email { get; set; }
+    
     public Occupation Occupation { get; set; }
 
-    private float _salary;
+    private decimal _salary;
 
-    public float Salary
+    [Required]
+    [Money]
+    [Range(0, int.MaxValue, ErrorMessage = "Salary cannot be less than 0.")]
+    public decimal Salary
     {
         get => _salary;
         set
         {
-            if (value < 0)
-            {
-                throw new ArgumentException("Salary cannot be less than 0.");
-            }
-
+            //if (value < 0)
+            //{
+            //    throw new ArgumentException("Salary cannot be less than 0.");
+            //}
+            PropertyValidator.Validate(this, value);
             _salary = value;
         }
     }
@@ -153,20 +140,20 @@ public class Employee
     public List<Vacation> Vacations { get; set; }
 
     public Employee(string name, string surname, DateTime birthDate, string phoneNumber, string email,
-        Occupation occupation, float salary)
+        Occupation occupation, decimal salary)
     {
         Name = name;
         Surname = surname;
         BirthDate = birthDate;
         PhoneNumber = phoneNumber;
-        Email = email;
+        Email = new MailAddress(email);
         Occupation = occupation;
         Salary = salary;
         ObjectStore.Add<Employee>(this);
     }
 
     public static Employee Add(string name, string surname, DateTime birthDate, string phoneNumber, string email,
-        Occupation occupation, float salary)
+        Occupation occupation, decimal salary)
     {
         var emp = new Employee(name, surname, birthDate, phoneNumber, email, occupation, salary);
         return emp;

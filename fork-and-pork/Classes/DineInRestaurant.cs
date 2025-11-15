@@ -1,4 +1,8 @@
+using System.Runtime.CompilerServices;
+
 namespace fork_and_pork.Classes;
+
+using System.ComponentModel.DataAnnotations;
 
 public class DineInRestaurant : Restaurant
 {
@@ -11,9 +15,8 @@ public class DineInRestaurant : Restaurant
         {
             if (value < 0f || value > 1f)
             {
-                throw new ArgumentException("TipTax must be between 0 and 1.");
+                throw new ValidationException("TipTax must be between 0 and 1.");
             }
-
             _tipTax = value;
         }
     }

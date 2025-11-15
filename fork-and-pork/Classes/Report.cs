@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace fork_and_pork.Classes;
 
 public enum Grade
@@ -11,21 +13,41 @@ public enum Grade
 
 public class Report
 {
-    public DateTime StartDate { get; set; }
-    public DateTime FinishDate { get; set; }
+    private DateTime _startDate;
+
+    [NotFutureDate]
+    public DateTime StartDate
+    {
+        get { return _startDate; }
+        set
+        {
+            PropertyValidator.Validate(this, value);
+            _startDate = value;
+        }
+    }
+
+    private DateTime _finishDate;
+
+    [NotFutureDate]
+    public DateTime FinishDate
+    {
+        get { return _finishDate; }
+        set
+        {
+            PropertyValidator.Validate(this, value);
+            _startDate = value;
+        }
+    }
 
     private string _notes;
 
+    [Required(ErrorMessage = "MenuItem Name cannot be empty or just whitespace.")]
     public string Notes
     {
         get { return _notes; }
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("MenuItem Name cannot be empty or just whitespace.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _notes = value;
         }
     }

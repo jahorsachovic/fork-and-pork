@@ -1,22 +1,36 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
 namespace fork_and_pork.Classes;
 
-public class Address
-{
-    public string Country { get; set; }
-    public string City { get; set; }
-    public string Street { get; set; }
-    public string PostIndex { get; set; }
-    public string Building { get; set; }
-}
-
 public class Restaurant
 {
-    public Address Address { get; set; }
+    private Address _address;
 
+    [Required]
+    public Address Address
+    {
+        get { return _address;}
+        set
+        {
+            PropertyValidator.Validate(this, value);
+            var context = new ValidationContext(value);
+            Validator.ValidateObject(value, context, validateAllProperties: true);
+            _address = value;
+        }
+    }
+
+    private Dictionary<DayOfWeek, (TimeOnly, TimeOnly)> _workingHours;
     // Complex Attribute
-    public Dictionary<DayOfWeek, (TimeOnly, TimeOnly)> WorkingHours { get; set; }
+    [Required]
+    public Dictionary<DayOfWeek, (TimeOnly, TimeOnly)> WorkingHours
+    {
+        get { return _workingHours; }
+        set {
+            PropertyValidator.Validate(this, value);
+            _workingHours = value;
+        }
+    }
 
     // Associations 
     public Dictionary<string, Employee> Employees { get; set; }
@@ -31,6 +45,7 @@ public class Restaurant
         Employees = new Dictionary<string, Employee>();
         ObjectStore.Add<Restaurant>(this);
     }
+
 
     public Restaurant(Address address) : this()
     {

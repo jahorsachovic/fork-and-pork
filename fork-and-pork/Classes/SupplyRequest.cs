@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace fork_and_pork.Classes;
 
 public enum RequestStatus
@@ -11,7 +13,20 @@ public enum RequestStatus
 public class SupplyRequest
 {
     private RequestStatus Status { get; set; }
-    private DateTime DeadlineDate { get; set; }
+
+    private DateTime _deadlineDate;
+
+    [Required]
+    [FutureDate]
+    public DateTime DeadlineDate
+    {
+        get => _deadlineDate;
+        set
+        {
+            PropertyValidator.Validate(this, value);
+            _deadlineDate = value;
+        }
+    }
 
     public List<Product> Products { get; set; }
 

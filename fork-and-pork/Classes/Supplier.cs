@@ -1,14 +1,39 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
 namespace fork_and_pork.Classes;
 
 public class Supplier
 {
-    public string Name { get; set; }
-    public MailAddress Email { get; set; }
-    public string Address { get; set; }
+    private string _name;
 
-    public Supplier(string name, MailAddress email, string address)
+    [Required]
+    public string Name
+    {
+        get { return _name; }
+        set{
+            PropertyValidator.Validate(this, value);
+            _name = value;
+        }
+    }
+
+    public MailAddress Email { get; set; }
+
+    private Address _address;
+
+    [Required]
+    public Address Address
+    {
+        get { return _address; }
+        set {
+            PropertyValidator.Validate(this, value);
+            var context = new ValidationContext(value);
+            Validator.ValidateObject(value, context, validateAllProperties: true);
+            _address = value;
+        }
+    }
+
+    public Supplier(string name, MailAddress email, Address address)
     {
         Name = name;
         Email = email;
@@ -16,7 +41,7 @@ public class Supplier
         ObjectStore.Add(this);
     }
 
-    public static Supplier AddSupplier(string name, MailAddress email, string address)
+    public static Supplier AddSupplier(string name, MailAddress email, Address address)
     {
         return new Supplier(name, email, address);
     }

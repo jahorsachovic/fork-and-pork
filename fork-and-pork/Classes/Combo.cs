@@ -1,19 +1,18 @@
 namespace fork_and_pork.Classes;
 
+using System.ComponentModel.DataAnnotations;
+
+
 public class Combo
 {
     private string _name;
-
+    [Required(ErrorMessage = "Name cannot be empty or just whitespace.")]
     public string Name
     {
-        get { return _name; }
+        get => _name; 
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("Name cannot be empty or just whitespace.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _name = value;
         }
     }
@@ -21,12 +20,24 @@ public class Combo
     // Derived
     public float Calories => Items.Sum(i => i.Calories); //moved here
 
-    public float Price { get; set; }
+    private decimal _price;
+    
+    [Required]
+    [Money]
+    [Range(0, int.MaxValue)]
+    public decimal Price
+    {
+        get => _price; 
+        set {
+            PropertyValidator.Validate(this, value);
+            _price = value;
+        }
+    }
 
     //Associations
     public List<MenuItem> Items { get; set; }
 
-    public Combo(string name, float price)
+    public Combo(string name, decimal price)
     {
         Name = name;
         //foreach (MenuItem menuItem in Items)

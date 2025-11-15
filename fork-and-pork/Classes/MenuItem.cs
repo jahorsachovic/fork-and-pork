@@ -1,59 +1,56 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace fork_and_pork.Classes;
 
 public class MenuItem
 {
+
     private string _name;
 
+    [Required(ErrorMessage = "MenuItem Name cannot be empty")]
+    [MinLength(1)]
     public string Name
     {
-        get => _name;
+        get { return _name;}
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("MenuItem Name cannot be empty or just whitespace.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _name = value;
-        }
+        } 
     }
 
-    private float _calories;
+    private int _calories;
 
-    public float Calories
+    [Required]
+    [Range(0 , int.MaxValue, ErrorMessage = "MenuItem cannot have less than 0 calories.")]
+    public int Calories
     {
         get => _calories;
         set
         {
-            if (value < 0)
-            {
-                throw new ArgumentException("MenuItem cannot have less than 0 calories.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _calories = value;
         }
     }
+    
+    
+    private decimal _price;
 
-
-    private float _price;
-
-    public float Price
+    [Required]
+    [Money]
+    public decimal Price
     {
         get => _price;
         set
         {
-            if (value < 0)
-            {
-                throw new ArgumentException("Price cannot be negative.");
-            }
-
+            PropertyValidator.Validate(this, value);
             _price = value;
         }
     }
 
-    public List<Product> ProductsUsed;
+    //public List<Product> ProductsUsed;
 
-    public MenuItem(string name, float calories, float price)
+    public MenuItem(string name, int calories, decimal price)
     {
         Name = name;
         Calories = calories;

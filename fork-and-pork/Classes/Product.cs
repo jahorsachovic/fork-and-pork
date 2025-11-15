@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace fork_and_pork.Classes;
 
 public enum ProductType
@@ -11,6 +13,7 @@ public enum ProductType
 
 public class Product
 {
+    [Required]
     public ProductType ProductType { get; set; }
 
     public Product(ProductType productType)
