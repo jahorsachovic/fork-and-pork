@@ -29,14 +29,13 @@ public class SerializerTests
         );
 
         Restaurant r1 = new Restaurant(
-            new Address()
-            {
-                Country = "Poland",
-                City = "Warsaw",
-                Street = "Staszica",
-                PostIndex = "03-114",
-                Building = "14"
-            },
+            new Address(
+                "Poland",
+                "Warsaw",
+                "Staszica",
+                "03-114",
+                "14"
+            ),
             new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
             {
                 { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },

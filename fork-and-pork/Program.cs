@@ -7,5 +7,4 @@ MenuItem mi = new MenuItem("Item1", 200, new decimal(7.99));
 mi.Price = new decimal(-8.99);
 
 
-Console.WriteLine(new Address());
 Console.WriteLine($"{mi.Name} + {mi.Calories} + {mi.Price}");

@@ -10,13 +10,8 @@ public class Address
     private string _street;
     private string _postIndex;
     private string _building;
-    
-    public Address()
-    {
-        
-    }
-    
-    public Address(string country, string city, string street, string building, string postIndex): base()
+
+    public Address(string country, string city, string street, string building, string postIndex)
     {
         Country = country;
         City = city;
@@ -24,43 +19,50 @@ public class Address
         PostIndex = postIndex;
         Building = building;
     }
-    
+
     [Required]
     public string Country
     {
-        get { return _country;} 
-        set {
+        get { return _country; }
+        set
+        {
             PropertyValidator.Validate(this, value);
             _country = value;
-        } 
+        }
     }
 
     [Required]
-    public string City {
-        get { return _city;} 
-        set {
+    public string City
+    {
+        get { return _city; }
+        set
+        {
             PropertyValidator.Validate(this, value);
             _city = value;
-        } 
+        }
     }
-    
+
     [Required]
-    public string Street {
-        get { return _street;} 
-        set {
+    public string Street
+    {
+        get { return _street; }
+        set
+        {
             PropertyValidator.Validate(this, value);
             _street = value;
-        } 
-}
-    
+        }
+    }
+
     [Required]
-    public string PostIndex {
-        get { return _postIndex;} 
-        set {
+    public string PostIndex
+    {
+        get { return _postIndex; }
+        set
+        {
             PropertyValidator.Validate(this, value);
             _postIndex = value;
-        } 
-}
+        }
+    }
 
     [Required]
     public string Building

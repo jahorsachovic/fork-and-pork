@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace fork_and_pork.Classes;
 
@@ -54,7 +56,7 @@ public class Employee
     }
 
     private DateTime _birthDate;
-    
+
     [Required]
     [NotFutureDate(ErrorMessage = "BirthDate cannot be in the future.")]
     public DateTime BirthDate
@@ -90,13 +92,13 @@ public class Employee
         get => _fireDate;
         private set
         {
-            if (value != null) 
+            if (value != null)
                 PropertyValidator.Validate(this, value);
             _fireDate = value;
         }
     }
 
-    
+
     private string _phoneNumber;
 
     [Required(ErrorMessage = "Phone Number cannot be empty or just whitespace.")]
@@ -112,9 +114,8 @@ public class Employee
     }
 
     // Complex attribute
-    [Required]
-    public MailAddress Email { get; set; }
-    
+    [Required] public MailAddress Email { get; set; }
+
     public Occupation Occupation { get; set; }
 
     private decimal _salary;
@@ -183,11 +184,6 @@ public class Employee
 
     public override string ToString()
     {
-        return $"{Name} {Surname} {Occupation} \nBirthDate: {BirthDate} \nSalary: {Salary}";
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return base.Equals(obj);
+        return $"{Name} {Surname} {Occupation} \nBirthDate: {BirthDate} \nSalary: {Salary.ToString("C")}";
     }
 }
