@@ -138,7 +138,7 @@ public class ClassesTests
     [Test]
     public void TestDeliveryRestaurant()
     {
-        DeliveryRestaurant r = new DeliveryRestaurant(0.2f, 4f);
+        DeliveryRestaurant r = new DeliveryRestaurant(new Address("Poland", "Warsaw", "Staszica", "03-114", "14"),0.2f, 4f);
         Assert.That(r.DeliveryTax, Is.EqualTo(0.2f));
         Assert.That(r.DeliveryRadius, Is.EqualTo(4f));
     }
@@ -157,11 +157,9 @@ public class ClassesTests
             "Wonderland", DateTime.Now.AddYears(-20), "+48797677123",
             "alice@gmail.com", Occupation.Cook, 12000);
 
-        Restaurant r1 = new Restaurant
-        {
-            //changed e1.Email to e1.Email.Address
-            Employees = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
-            WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
+        Restaurant r1 = new Restaurant(
+            new Address("Poland", "Warsaw", "Staszica", "03-114", "14"),
+            new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
             {
                 { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
                 { DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
@@ -169,8 +167,8 @@ public class ClassesTests
                 { DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
                 { DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
             },
-            Address = new Address("Poland", "Warsaw", "Staszica", "03-114", "14"),
-        };
+            new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } }
+        );
 
         Assert.That(r1.NumberOfEmployees == 2);
         Assert.That(e1 == r1.Employees[e1.Email.Address]); //same here

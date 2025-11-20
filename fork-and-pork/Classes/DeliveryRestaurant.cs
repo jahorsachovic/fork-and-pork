@@ -33,7 +33,7 @@ public class DeliveryRestaurant : Restaurant
     }
 
 
-    public DeliveryRestaurant(float deliveryTax, float deliveryRadius) : base()
+    public DeliveryRestaurant(Address address, float deliveryTax, float deliveryRadius) : base(address)
     {
         DeliveryTax = deliveryTax;
         DeliveryRadius = deliveryRadius;

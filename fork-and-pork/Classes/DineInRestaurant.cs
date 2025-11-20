@@ -21,7 +21,7 @@ public class DineInRestaurant : Restaurant
         }
     }
 
-    public DineInRestaurant() : base()
+    public DineInRestaurant(Address address) : base(address)
     {
         ObjectStore.Add(this);
     }

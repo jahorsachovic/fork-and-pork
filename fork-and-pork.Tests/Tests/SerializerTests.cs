@@ -28,26 +28,24 @@ public class SerializerTests
             "joeDoe@gmail.com", Occupation.Chief, 25000, 125645645
         );
 
-        Restaurant r1 = new Restaurant()
-        {
-            Employees = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
-            WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
-            {
-                { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-            },
-            Address = new Address()
+        Restaurant r1 = new Restaurant(
+            new Address()
             {
                 Country = "Poland",
                 City = "Warsaw",
                 Street = "Staszica",
                 PostIndex = "03-114",
                 Building = "14"
-            }
-        };
+            },
+            new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
+            {
+                { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+            }, new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } }
+        );
 
 
         ObjectStore.Save("test-data.json");
@@ -71,6 +69,7 @@ public class SerializerTests
 
         loadedEmployees[0].PhoneNumber = "+48797677123";
         Assert.That(loadedEmployees[0] == loadedRestaurants[0].Employees[e1.Email.Address]);
-        Assert.That(loadedEmployees[0].PhoneNumber, Is.EqualTo(loadedRestaurants[0].Employees[e1.Email.Address].PhoneNumber));
+        Assert.That(loadedEmployees[0].PhoneNumber,
+            Is.EqualTo(loadedRestaurants[0].Employees[e1.Email.Address].PhoneNumber));
     }
 }
