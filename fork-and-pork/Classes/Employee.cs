@@ -14,20 +14,39 @@ public enum Occupation
 
 public class Vacation
 {
+    // Attributes
     public DateTime StartDate { get; set; }
     public DateTime FinishDate { get; set; }
 
-    public Vacation(DateTime startDate, DateTime finishDate)
+    public Vacation(DateTime startDate, DateTime finishDate, Employee employee)
     {
         StartDate = startDate;
-        FinishDate = finishDate;
+        FinishDate = finishDate;      
+          
+        _employee = employee;
+        employee.AddVacation(this);
+        
         ObjectStore.Add(this);
+    }
+    
+    // Associations
+    private Employee _employee;
+    
+    public Employee Employee
+    {
+        get => _employee;
     }
 }
 
 public class Employee
 {
     private string _name;
+    
+    public static void DeleteEmployee(Employee emp)
+    {
+        foreach (var vac in emp._vacations) emp.DeleteVacation(vac);
+        ObjectStore.Delete(emp);
+    }
 
     [Required(ErrorMessage = "Name cannot be empty or just whitespace.")]
     public string Name
@@ -54,7 +73,7 @@ public class Employee
     }
 
     private DateTime _birthDate;
-    
+
     [Required]
     [NotFutureDate(ErrorMessage = "BirthDate cannot be in the future.")]
     public DateTime BirthDate
@@ -90,13 +109,13 @@ public class Employee
         get => _fireDate;
         private set
         {
-            if (value != null) 
+            if (value != null)
                 PropertyValidator.Validate(this, value);
             _fireDate = value;
         }
     }
 
-    
+
     private string _phoneNumber;
 
     [Required(ErrorMessage = "Phone Number cannot be empty or just whitespace.")]
@@ -112,9 +131,8 @@ public class Employee
     }
 
     // Complex attribute
-    [Required]
-    public MailAddress Email { get; set; }
-    
+    [Required] public MailAddress Email { get; set; }
+
     public Occupation Occupation { get; set; }
 
     private decimal _salary;
@@ -137,10 +155,87 @@ public class Employee
     }
 
     // Associations
-    public List<Vacation> Vacations { get; set; }
+    private HashSet<Vacation> _vacations { get; set; }
+
+    public HashSet<Vacation> GetVacations()
+    {
+        return new HashSet<Vacation>(_vacations);
+    }
+
+    public Vacation AddVacation(DateTime startDate, DateTime finishDate)
+    {
+        return new Vacation(startDate, finishDate, this);
+    }
+
+    public void AddVacation(Vacation vacation)
+    {
+        if (this != vacation.Employee)
+            throw new ArgumentException("Vacation belongs to a different Employee.");
+
+        _vacations.Add(vacation);
+    }
+
+    public void DeleteVacation(Vacation vacation)
+    {
+        _vacations.Remove(vacation);
+        ObjectStore.Delete(vacation);
+    }
+
+    public bool IsOnVacation()
+    {
+        var match = _vacations.FirstOrDefault(v => v.StartDate < DateTime.Now && v.FinishDate > DateTime.Now);
+        return match != null;
+    }
+
+    private Employee? _supervisor = null;
+
+    public Employee? Supervisor
+    {
+        get => _supervisor;
+        set
+        {
+            if (value == this)
+                throw new ArgumentException("Employee cannot be supervised by himself.");
+            _supervisor = value;
+        }
+    }
+
+    public void SetSupervisor(Employee supervisor)
+    {
+        if (Supervisor != null)
+            DeleteSupervisor();
+
+        supervisor.AddSupervisedEmployee(this);
+    }
+
+    public void DeleteSupervisor()
+    {
+        if (Supervisor == null)
+            throw new NullReferenceException("Employee has no supervisor.");
+        Supervisor.DeleteSupervisedEmployee(this);
+    }
+
+    private HashSet<Employee> _supervisedEmployees;
+
+    public HashSet<Employee> GetSupervisedEmployees()
+    {
+        return new HashSet<Employee>(_supervisedEmployees);
+    }
+
+    public void AddSupervisedEmployee(Employee emp)
+    {
+        emp.Supervisor = this;
+        _supervisedEmployees.Add(emp);
+    }
+
+    public void DeleteSupervisedEmployee(Employee emp)
+    {
+        emp.Supervisor = null;
+        _supervisedEmployees.Remove(emp);
+    }
 
     public Employee(string name, string surname, DateTime birthDate, string phoneNumber, string email,
-        Occupation occupation, decimal salary)
+        Occupation occupation, decimal salary, Employee? supervisor = null, HashSet<Employee>? supervisedEmployees = null)
     {
         Name = name;
         Surname = surname;
@@ -149,6 +244,9 @@ public class Employee
         Email = new MailAddress(email);
         Occupation = occupation;
         Salary = salary;
+        _supervisedEmployees = supervisedEmployees == null ? new HashSet<Employee>() : new HashSet<Employee>(supervisedEmployees);
+        Supervisor = supervisor;
+        _vacations = new HashSet<Vacation>();
         ObjectStore.Add<Employee>(this);
     }
 
@@ -168,17 +266,6 @@ public class Employee
     {
         FireDate = null;
         HireDate = DateTime.Now;
-    }
-
-    public void AddVacation(DateTime startDate, DateTime finishDate)
-    {
-        Vacations.Add(new Vacation(startDate, finishDate));
-    }
-
-    public bool IsOnVacation()
-    {
-        var match = Vacations.FirstOrDefault(v => v.StartDate < DateTime.Now && v.FinishDate > DateTime.Now);
-        return match == null;
     }
 
     public override string ToString()

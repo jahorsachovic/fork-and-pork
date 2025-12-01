@@ -31,6 +31,19 @@ public static class ObjectStore
         items.Add(obj);
     }
 
+    public static void Delete(object obj)
+    {
+        Type targetType = obj.GetType();
+
+        if (!_store.TryGetValue(targetType, out List<object> items))
+        {
+            items = new List<object>();
+            _store[targetType] = items;
+        }
+        
+        items.Remove(obj);
+    }
+
     public static void Add<TBase>(object obj)
     {
         Type targetType = typeof(TBase);
@@ -54,6 +67,7 @@ public static class ObjectStore
             Add(item);
         }
     }
+
 
     public static List<T> GetObjectList<T>() where T : class
     {

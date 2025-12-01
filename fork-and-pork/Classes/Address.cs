@@ -13,7 +13,11 @@ public class Address
     
     public Address()
     {
-        
+        Country = "Country";
+        City = "City";
+        Street = "Street";
+        Building = "Building";
+        PostIndex = "PostIndex";
     }
     
     public Address(string country, string city, string street, string building, string postIndex): base()

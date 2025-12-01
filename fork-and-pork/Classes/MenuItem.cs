@@ -48,13 +48,41 @@ public class MenuItem
         }
     }
 
-    //public List<Product> ProductsUsed;
-
     public MenuItem(string name, int calories, decimal price)
     {
         Name = name;
         Calories = calories;
         Price = price;
+        _combos = new HashSet<Combo>();
         ObjectStore.Add(this);
     }
+    
+    // Associations
+    private HashSet<Combo> _combos;
+
+    public HashSet<Combo> GetCombos()
+    {
+        return new HashSet<Combo>(_combos);
+    }
+
+    public void AddToCombo(Combo combo)
+    {
+        combo.AddItem(this);
+    }
+    
+    public void AddToComboNoBackRef(Combo combo)
+    {
+        _combos.Add(combo);
+    }
+
+    public void DeleteFromCombo(Combo combo)
+    {
+        combo.DeleteItem(this);
+    }
+    
+    public void DeleteFromComboNoBackRef(Combo combo)
+    {
+        _combos.Remove(combo);
+    }
+    
 }

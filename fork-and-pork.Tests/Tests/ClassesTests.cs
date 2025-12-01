@@ -91,20 +91,17 @@ public class ClassesTests
     [Test]
     public void TestCombo()
     {
-        Combo c = new Combo("Combo1", new decimal(12.99));
-        c.Items.Add(new MenuItem("I1", 300, new decimal(7.99)));
-        c.Items.Add(new MenuItem("I2", 200, new decimal(6.99f)));
-
+        Combo c = new Combo("Combo1", new decimal(12.99), new HashSet<MenuItem>{new MenuItem("I1", 300, new decimal(7.99))});
         Assert.That(c.Name, Is.EqualTo("Combo1"));
         Assert.That(c.Price, Is.EqualTo(12.99f));
-        Assert.That(c.Items.Count, Is.EqualTo(2));
-        Assert.That(c.Calories, Is.EqualTo(500f).Within(0.1));
+        Assert.That(c.GetMenuItems().Count, Is.EqualTo(1));
+        Assert.That(c.Calories, Is.EqualTo(300f).Within(0.1));
     }
 
     [Test]
     public void TestComboException()
     {
-        Combo c = new Combo("Combo1", new decimal(12.99f));
+        Combo c = new Combo("Combo1", new decimal(12.99f), new HashSet<MenuItem>{new MenuItem("I1", 300, new decimal(7.99))});
 
         Exception ex = Assert.Throws<ValidationException>(() => c.Name = " ");
         Assert.That(ex.Message, Is.EqualTo("Name cannot be empty or just whitespace."));

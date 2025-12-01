@@ -2,14 +2,14 @@ namespace fork_and_pork.Classes;
 
 using System.ComponentModel.DataAnnotations;
 
-
 public class Combo
 {
     private string _name;
+
     [Required(ErrorMessage = "Name cannot be empty or just whitespace.")]
     public string Name
     {
-        get => _name; 
+        get => _name;
         set
         {
             PropertyValidator.Validate(this, value);
@@ -18,33 +18,58 @@ public class Combo
     }
 
     // Derived
-    public float Calories => Items.Sum(i => i.Calories); //moved here
+    public float Calories => _items.Sum(i => i.Calories); //moved here
 
     private decimal _price;
-    
+
     [Required]
     [Money]
     [Range(0, int.MaxValue)]
     public decimal Price
     {
-        get => _price; 
-        set {
+        get => _price;
+        set
+        {
             PropertyValidator.Validate(this, value);
             _price = value;
         }
     }
 
     //Associations
-    public List<MenuItem> Items { get; set; }
+    private HashSet<MenuItem> _items { get; set; }
 
-    public Combo(string name, decimal price)
+    public HashSet<MenuItem> GetMenuItems()
     {
+        return new HashSet<MenuItem>(_items);
+    }
+
+    public void AddItem(MenuItem item)
+    {
+        item.AddToComboNoBackRef(this);
+        _items.Add(item);
+    }
+
+    public void DeleteItem(MenuItem item)
+    {
+        if (_items.Count == 1) throw new ArgumentException("Combo must have at least one item.");
+
+        _items.Remove(item);
+        item.DeleteFromComboNoBackRef(this);
+    }
+
+
+    public Combo(string name, decimal price, HashSet<MenuItem> items)
+    {
+        if (items.Count == 0)
+            throw new ArgumentException("Combo must have at least one item.");
         Name = name;
-        //foreach (MenuItem menuItem in Items)
-        //{ }
-        Items = new List<MenuItem>();
-        // Calories = Items.Sum(i => i.Calories); 
         Price = price;
+        _items = new HashSet<MenuItem>();
+
+        foreach (var item in items)
+        {
+            AddItem(item);
+        }
 
         ObjectStore.Add(this);
     }
