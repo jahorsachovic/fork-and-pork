@@ -67,22 +67,15 @@ public class MenuItem
 
     public void AddToCombo(Combo combo)
     {
-        combo.AddItem(this);
+        if (_combos.Contains(combo)) return;
+        _combos.Add(combo);    
+        combo.AddItem(this);    
     }
     
-    public void AddToComboNoBackRef(Combo combo)
+    public void RemoveFromCombo(Combo combo)
     {
-        _combos.Add(combo);
-    }
-
-    public void DeleteFromCombo(Combo combo)
-    {
-        combo.DeleteItem(this);
-    }
-    
-    public void DeleteFromComboNoBackRef(Combo combo)
-    {
+        if (!_combos.Contains(combo)) return;
+        combo.RemoveItem(this);
         _combos.Remove(combo);
     }
-    
 }

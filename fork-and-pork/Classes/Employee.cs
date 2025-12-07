@@ -21,17 +21,17 @@ public class Vacation
     public Vacation(DateTime startDate, DateTime finishDate, Employee employee)
     {
         StartDate = startDate;
-        FinishDate = finishDate;      
-          
+        FinishDate = finishDate;
+
         _employee = employee;
         employee.AddVacation(this);
-        
+
         ObjectStore.Add(this);
     }
-    
+
     // Associations
     private Employee _employee;
-    
+
     public Employee Employee
     {
         get => _employee;
@@ -41,7 +41,7 @@ public class Vacation
 public class Employee
 {
     private string _name;
-    
+
     public static void DeleteEmployee(Employee emp)
     {
         foreach (var vac in emp._vacations) emp.DeleteVacation(vac);
@@ -155,16 +155,11 @@ public class Employee
     }
 
     // Associations
-    private HashSet<Vacation> _vacations { get; set; }
+    private HashSet<Vacation> _vacations; 
 
     public HashSet<Vacation> GetVacations()
     {
         return new HashSet<Vacation>(_vacations);
-    }
-
-    public Vacation AddVacation(DateTime startDate, DateTime finishDate)
-    {
-        return new Vacation(startDate, finishDate, this);
     }
 
     public void AddVacation(Vacation vacation)
@@ -187,32 +182,32 @@ public class Employee
         return match != null;
     }
 
-    private Employee? _supervisor = null;
+    private Employee? _supervisor;
 
-    public Employee? Supervisor
+    public Employee? GetSupervisor()
     {
-        get => _supervisor;
-        set
-        {
-            if (value == this)
-                throw new ArgumentException("Employee cannot be supervised by himself.");
-            _supervisor = value;
-        }
+        return _supervisor;
     }
 
     public void SetSupervisor(Employee supervisor)
     {
-        if (Supervisor != null)
+        if (supervisor == this)
+            throw new ArgumentException("Employee cannot be supervised by themselves.");
+
+        if (_supervisor == supervisor) return;
+
+        if (_supervisor != null)
             DeleteSupervisor();
 
+        _supervisor = supervisor;
         supervisor.AddSupervisedEmployee(this);
     }
 
     public void DeleteSupervisor()
     {
-        if (Supervisor == null)
+        if (_supervisor == null)
             throw new NullReferenceException("Employee has no supervisor.");
-        Supervisor.DeleteSupervisedEmployee(this);
+        _supervisor.DeleteSupervisedEmployee(this);
     }
 
     private HashSet<Employee> _supervisedEmployees;
@@ -224,18 +219,45 @@ public class Employee
 
     public void AddSupervisedEmployee(Employee emp)
     {
-        emp.Supervisor = this;
+        if (_supervisedEmployees.Contains(emp)) return;
         _supervisedEmployees.Add(emp);
+        emp.SetSupervisor(this);
     }
 
     public void DeleteSupervisedEmployee(Employee emp)
     {
-        emp.Supervisor = null;
+        emp._supervisor = null;
         _supervisedEmployees.Remove(emp);
     }
 
+    private Restaurant? _restaurant;
+
+    public Restaurant? GetRestaurant()
+    {
+        return _restaurant;
+    }
+
+    public void SetRestaurant(Restaurant restaurant)
+    {
+        if (_restaurant == restaurant) return;
+        if(_restaurant != null) RemoveFromRestaurant();
+        
+        _restaurant = restaurant;
+        _restaurant.AddEmployee(this);
+    }
+
+    public void RemoveFromRestaurant()
+    {
+        if (_restaurant == null) return;
+        if (_restaurant.GetEmployees().ContainsKey(this.Email.Address))
+            _restaurant.RemoveEmployee(this);
+        _restaurant = null;
+    }
+
+
     public Employee(string name, string surname, DateTime birthDate, string phoneNumber, string email,
-        Occupation occupation, decimal salary, Employee? supervisor = null, HashSet<Employee>? supervisedEmployees = null)
+        Occupation occupation, decimal salary, Restaurant restaurant = null, Employee? supervisor = null,
+        HashSet<Employee>? supervisedEmployees = null)
     {
         Name = name;
         Surname = surname;
@@ -244,16 +266,19 @@ public class Employee
         Email = new MailAddress(email);
         Occupation = occupation;
         Salary = salary;
-        _supervisedEmployees = supervisedEmployees == null ? new HashSet<Employee>() : new HashSet<Employee>(supervisedEmployees);
-        Supervisor = supervisor;
+        _supervisedEmployees = supervisedEmployees == null
+            ? new HashSet<Employee>()
+            : new HashSet<Employee>(supervisedEmployees);
+        _supervisor = supervisor;
         _vacations = new HashSet<Vacation>();
+        SetRestaurant(restaurant);
         ObjectStore.Add<Employee>(this);
     }
 
     public static Employee Add(string name, string surname, DateTime birthDate, string phoneNumber, string email,
-        Occupation occupation, decimal salary)
+        Occupation occupation, decimal salary, Restaurant restaurant)
     {
-        var emp = new Employee(name, surname, birthDate, phoneNumber, email, occupation, salary);
+        var emp = new Employee(name, surname, birthDate, phoneNumber, email, occupation, salary, restaurant);
         return emp;
     }
 
@@ -271,10 +296,5 @@ public class Employee
     public override string ToString()
     {
         return $"{Name} {Surname} {Occupation} \nBirthDate: {BirthDate} \nSalary: {Salary}";
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return base.Equals(obj);
     }
 }

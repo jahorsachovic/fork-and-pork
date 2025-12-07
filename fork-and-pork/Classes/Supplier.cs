@@ -33,16 +33,41 @@ public class Supplier
         }
     }
 
-    public Supplier(string name, MailAddress email, Address address)
+    private Supplier(string name, MailAddress email, Address address, HashSet<Product> products)
     {
         Name = name;
         Email = email;
         Address = address;
+        _products = new HashSet<Product>(products);
         ObjectStore.Add(this);
     }
 
-    public static Supplier AddSupplier(string name, MailAddress email, Address address)
+    public static Supplier AddSupplier(string name, MailAddress email, Address address, HashSet<Product> products)
     {
-        return new Supplier(name, email, address);
+        return new Supplier(name, email, address, products);
     }
+
+    private HashSet<Product> _products;
+    
+    public HashSet<Product> GetProductsSupplied()
+    {
+        return new HashSet<Product>(_products);
+    }
+
+    public void AddProductSupplied(Product product)
+    {
+        if (product.GetSuppliers().Contains(this)) return;
+        _products.Add(product);
+        product.AddSupplier(this);
+    }
+    
+    public void RemoveProduct(Product product){
+        if (!_products.Contains(product)) return;
+        if (_products.Count == 1) throw new ArgumentException("ProductsSupplied count must be at least one.");
+        
+        _products.Remove(product);
+        product.RemoveSupplier(this);
+    }
+    
+    
 }

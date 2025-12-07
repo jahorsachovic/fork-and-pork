@@ -45,22 +45,23 @@ public class Combo
 
     public void AddItem(MenuItem item)
     {
-        item.AddToComboNoBackRef(this);
-        _items.Add(item);
+        if (_items.Contains(item)) return;
+        _items.Add(item);   
+        item.AddToCombo(this);
     }
 
-    public void DeleteItem(MenuItem item)
+    public void RemoveItem(MenuItem item)
     {
+        if (!_items.Contains(item)) return;
         if (_items.Count == 1) throw new ArgumentException("Combo must have at least one item.");
-
         _items.Remove(item);
-        item.DeleteFromComboNoBackRef(this);
+        item.RemoveFromCombo(this);
     }
 
 
-    public Combo(string name, decimal price, HashSet<MenuItem> items)
+    public Combo(string name, decimal price, HashSet<MenuItem>? items = null)
     {
-        if (items.Count == 0)
+        if (items == null || items.Count == 0)
             throw new ArgumentException("Combo must have at least one item.");
         Name = name;
         Price = price;

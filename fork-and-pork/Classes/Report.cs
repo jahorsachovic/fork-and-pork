@@ -13,6 +13,7 @@ public enum Grade
 
 public class Report
 {
+    // Attributes
     private DateTime _startDate;
 
     [NotFutureDate]
@@ -53,18 +54,37 @@ public class Report
     }
 
     public Grade Grade { get; set; }
+    
+    // Associations
 
-    public Report(DateTime startDate, DateTime finishDate, string notes, Grade grade)
+    private Restaurant _restaurant;
+    private Inspector _inspector;
+    
+    public static Report SubmitReport(Restaurant restaurant, Inspector inspector, DateTime startDate, DateTime finishDate, string notes, Grade grade)
     {
+        return new Report(restaurant, inspector, startDate, finishDate, notes, grade);
+    }
+
+    public void DeleteReport()
+    {
+        _restaurant.RemoveReport(this);
+        _inspector.RemoveReport(this);
+        ObjectStore.Delete(this);
+    }
+
+    private Report(Restaurant restaurant, Inspector inspector, DateTime startDate, DateTime finishDate, string notes, Grade grade)
+    {
+        _restaurant = restaurant;
+        _inspector = inspector;
+        _restaurant.AddReport(this);
+        _inspector.AddReport(this);
+
         StartDate = startDate;
         FinishDate = finishDate;
         Notes = notes;
         Grade = grade;
         ObjectStore.Add(this);
+        
     }
 
-    public static Report SubmitReport(DateTime startDate, DateTime finishDate, string notes, Grade grade)
-    {
-        return new Report(startDate, finishDate, notes, grade);
-    }
 }

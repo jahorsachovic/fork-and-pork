@@ -10,14 +10,38 @@ using Classes;
 
 public class ClassesTests
 {
+    private Restaurant r1;
+    private Employee e1;
+    private DateTime birthday;
+
+    [SetUp]
+    public void SetUp()
+    {
+        r1 = new Restaurant
+        {
+            //changed e1.Email to e1.Email.Address
+            //_e = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
+            Address = new Address("Poland", "Warsaw", "Staszica", "03-114", "14"),
+            WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
+            {
+                { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+                { DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
+            }
+        };
+
+        birthday = DateTime.Now.AddYears(-20);
+        e1 = Employee.Add("Jane", "Doe", birthday, "+48999999999", "janedoe@gmail.com",
+            Occupation.Waiter,
+            700m, r1);
+    }
+
     // Optional
     [Test]
     public void TestEmployee()
     {
-        DateTime birthday = DateTime.Now.AddYears(-20);
-        Employee e1 = Employee.Add("Jane", "Doe", birthday, "+48999999999", "janedoe@gmail.com", Occupation.Waiter,
-            700m);
-
         Assert.That(e1.Name, Is.EqualTo("Jane"));
         Assert.That(e1.Surname, Is.EqualTo("Doe"));
         Assert.That(e1.BirthDate, Is.EqualTo(birthday));
@@ -37,8 +61,7 @@ public class ClassesTests
     public void TestEmployeeException()
     {
         DateTime birthday = DateTime.Now.AddYears(-20);
-        Employee e1 = Employee.Add("Jane", "Doe", birthday, "+48999999999", "janedoe@gmail.com", Occupation.Waiter,
-            700m);
+
 
         Exception ex = Assert.Throws<ValidationException>(() => e1.Name = "");
         Assert.That(ex.Message, Is.EqualTo("Name cannot be empty or just whitespace."));
@@ -79,10 +102,10 @@ public class ClassesTests
 
         Exception ex = Assert.Throws<ValidationException>(() => mi.Name = " ");
         Assert.That(ex.Message, Is.EqualTo("MenuItem Name cannot be empty"));
-        
+
         ex = Assert.Throws<ValidationException>(() => mi.Calories = -200);
         Assert.That(ex.Message, Is.EqualTo("MenuItem cannot have less than 0 calories."));
-        
+
         ex = Assert.Throws<ValidationException>(() => mi.Price = new decimal(-0.99));
         Assert.That(ex.Message, Is.EqualTo("The price must have only 2 decimal places and be positive."));
     }
@@ -91,7 +114,8 @@ public class ClassesTests
     [Test]
     public void TestCombo()
     {
-        Combo c = new Combo("Combo1", new decimal(12.99), new HashSet<MenuItem>{new MenuItem("I1", 300, new decimal(7.99))});
+        Combo c = new Combo("Combo1", new decimal(12.99),
+            new HashSet<MenuItem> { new MenuItem("I1", 300, new decimal(7.99)) });
         Assert.That(c.Name, Is.EqualTo("Combo1"));
         Assert.That(c.Price, Is.EqualTo(12.99f));
         Assert.That(c.GetMenuItems().Count, Is.EqualTo(1));
@@ -101,7 +125,8 @@ public class ClassesTests
     [Test]
     public void TestComboException()
     {
-        Combo c = new Combo("Combo1", new decimal(12.99f), new HashSet<MenuItem>{new MenuItem("I1", 300, new decimal(7.99))});
+        Combo c = new Combo("Combo1", new decimal(12.99f),
+            new HashSet<MenuItem> { new MenuItem("I1", 300, new decimal(7.99)) });
 
         Exception ex = Assert.Throws<ValidationException>(() => c.Name = " ");
         Assert.That(ex.Message, Is.EqualTo("Name cannot be empty or just whitespace."));
@@ -117,7 +142,8 @@ public class ClassesTests
     [Test]
     public void TestSupplier()
     {
-        Supplier s = Supplier.AddSupplier("Prork", new MailAddress("prork@proton.me"), new Address("Country", "City", "Str", "8", "00000"));
+        Supplier s = Supplier.AddSupplier("Prork", new MailAddress("prork@proton.me"),
+            new Address("Country", "City", "Str", "8", "00000"), new HashSet<Product>());
 
         Assert.That(s.Name, Is.EqualTo("Prork"));
         Assert.That(s.Email.Address, Is.EqualTo("prork@proton.me"));
@@ -144,33 +170,15 @@ public class ClassesTests
     [Test]
     public void TestRestaurant()
     {
-        Employee e1 = Employee.Add(
-            "Joe",
-            "Doe", DateTime.Now.AddYears(-35), "+48797777123",
-            "joeDoe@gmail.com", Occupation.Chief, 25000);
-
         Employee e2 = Employee.Add(
             "Alice",
             "Wonderland", DateTime.Now.AddYears(-20), "+48797677123",
-            "alice@gmail.com", Occupation.Cook, 12000);
+            "alice@gmail.com", Occupation.Cook, 12000, r1);
 
-        Restaurant r1 = new Restaurant
-        {
-            //changed e1.Email to e1.Email.Address
-            Employees = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
-            WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
-            {
-                { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Tuesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Wednesday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Thursday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-                { DayOfWeek.Friday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
-            },
-            Address = new Address("Poland", "Warsaw", "Staszica", "03-114", "14"),
-        };
 
+        Console.WriteLine(r1.NumberOfEmployees);
         Assert.That(r1.NumberOfEmployees == 2);
-        Assert.That(e1 == r1.Employees[e1.Email.Address]); //same here
+        Assert.That(e1 == r1.GetEmployees()[e1.Email.Address]); //same here
         Assert.That(r1.WorkingHours[DayOfWeek.Monday].Item1, Is.EqualTo(new TimeOnly(8, 00)));
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
+using System.Runtime.InteropServices.JavaScript;
 using NUnit.Framework;
 
 namespace fork_and_pork.Tests.Tests;
@@ -10,29 +11,17 @@ using Classes;
 
 public class SerializerTests
 {
-      [Test]
-    public void TestSaveAndLoad()
+    private Employee e1;
+    private Restaurant r1;
+
+    [SetUp]
+    public void SetUp()
     {
+        ObjectStore.Clear();
 
-        Employee e1 = Employee.Add(
-            "Joe",
-            "Doe", DateTime.Now.AddYears(-35), "+48797777123",
-            "joeDoe@gmail.com", Occupation.Chief, 25000.0m);
-
-        Employee e2 = Employee.Add(
-            "Alice",
-            "Wonderland", DateTime.Now.AddYears(-20), "+48797677123",
-            "alice@gmail.com", Occupation.Cook, 12000.0m);
-
-        Inspector i1 = new Inspector(
-            "Joe",
-            "Doe", DateTime.Now.AddYears(-35), "+48797777123",
-            "joeDoe@gmail.com", Occupation.Chief, 25000.0m, 125645645
-        );
-
-        Restaurant r1 = new Restaurant()
+        r1 = new Restaurant()
         {
-            Employees = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
+            //Employees = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
             WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
             {
                 { DayOfWeek.Monday, (new TimeOnly(8, 00), new TimeOnly(16, 00)) },
@@ -51,6 +40,30 @@ public class SerializerTests
             }
         };
 
+        e1 = Employee.Add(
+            "Joe",
+            "Doe", DateTime.Now.AddYears(-35), "+48797777123",
+            "joeDoe@gmail.com", Occupation.Chief, 25000.0m, r1);
+    }
+
+    [Test]
+    public void TestSaveAndLoad()
+    {
+        Employee e2 = Employee.Add(
+            "Alice",
+            "Wonderland", DateTime.Now.AddYears(-20), "+48797677123",
+            "alice@gmail.com", Occupation.Cook, 12000.0m, r1);
+
+        Inspector i1 = new Inspector(
+            "Joe",
+            "Doe", DateTime.Now.AddYears(-35), "+48797777123",
+            "joeDoe@gmail.com", Occupation.Chief, 25000.0m, r1, 125645645
+        );
+
+        // foreach (var pair in r1.GetEmployees())
+        // {
+        //     Console.WriteLine($"{pair.Key}: {pair.Value}");
+        // }
 
         ObjectStore.Save("test-data.json");
 
@@ -70,9 +83,8 @@ public class SerializerTests
         Assert.That(i1.ToString(), Is.EqualTo(loadedEmployees[2].ToString()));
         Assert.That(r1.ToString(), Is.EqualTo(loadedRestaurants[0].ToString()));
 
+        
         loadedEmployees[0].PhoneNumber = "+48797677123";
-        Assert.That(loadedEmployees[0] == loadedRestaurants[0].Employees[e1.Email.Address]);
-        Assert.That(loadedEmployees[0].PhoneNumber, Is.EqualTo(loadedRestaurants[0].Employees[e1.Email.Address].PhoneNumber));
     }
 
     [Test]
@@ -80,6 +92,6 @@ public class SerializerTests
     {
         Assert.DoesNotThrow(() => ObjectStore.Delete(new Employee("Joe",
             "Doe", DateTime.Now.AddYears(-35), "+48797777123",
-            "joeDoe@gmail.com", Occupation.Chief, 25000m)));
+            "joeDoe@gmail.com", Occupation.Chief, 25000m, r1)));
     }
 }

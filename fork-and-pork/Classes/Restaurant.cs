@@ -19,9 +19,12 @@ public class Restaurant
             _address = value;
         }
     }
+    
+    // Derived Attribute
+    public int NumberOfEmployees => _employees.Count;
 
-    private Dictionary<DayOfWeek, (TimeOnly, TimeOnly)> _workingHours;
     // Complex Attribute
+    private Dictionary<DayOfWeek, (TimeOnly, TimeOnly)> _workingHours;
     [Required]
     public Dictionary<DayOfWeek, (TimeOnly, TimeOnly)> WorkingHours
     {
@@ -33,22 +36,50 @@ public class Restaurant
     }
 
     // Associations 
-    public Dictionary<string, Employee> Employees { get; set; }
+    private Dictionary<string, Employee> _employees;
 
-    // Derivative
-    public int NumberOfEmployees => Employees.Count;
+    public Dictionary<string, Employee> GetEmployees()
+    {
+        return new Dictionary<string, Employee>(_employees);
+    }
 
+    public void AddEmployee(Employee emp)
+    {
+        if (_employees.ContainsKey(emp.Email.Address)) return;
+        _employees.Add(emp.Email.Address, emp);
+        emp.SetRestaurant(this);
+    }
+
+    public void RemoveEmployee(Employee emp)
+    {
+        _employees.Remove(emp.Email.Address);
+        if (emp.GetRestaurant() != this) return;
+        emp.RemoveFromRestaurant();
+    }
+
+    private List<Report> _reports;
+
+    public void AddReport(Report report)
+    {
+        _reports.Add(report);
+    }
+    
+    public void RemoveReport(Report report)
+    {
+        _reports.Remove(report);
+    }
+
+    public List<Report> GetReports()
+    {
+        return new List<Report>(_reports);
+    }
+    
     public Restaurant()
     {
         Address = new Address();
         WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>();
-        Employees = new Dictionary<string, Employee>();
+        _employees = new Dictionary<string, Employee>();
+        _reports = new List<Report>();
         ObjectStore.Add<Restaurant>(this);
-    }
-
-
-    public Restaurant(Address address) : this()
-    {
-        Address = address;
     }
 }
