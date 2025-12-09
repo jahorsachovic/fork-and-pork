@@ -59,6 +59,16 @@ public class Report
 
     private Restaurant _restaurant;
     private Inspector _inspector;
+
+    public Restaurant GetRestaurant()
+    {
+        return _restaurant;
+    }
+
+    public Inspector GetInspector()
+    {
+        return _inspector;
+    }
     
     public static Report SubmitReport(Restaurant restaurant, Inspector inspector, DateTime startDate, DateTime finishDate, string notes, Grade grade)
     {

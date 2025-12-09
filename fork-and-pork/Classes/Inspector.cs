@@ -28,6 +28,7 @@ public class Inspector : Employee
     
     public void AddReport(Report report)
     {
+        if(report.GetInspector() != this) throw new ArgumentException("Cannot assign report to another inspector.");
         _reports.Add(report);
     }
     
