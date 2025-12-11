@@ -39,6 +39,13 @@ public class Supplier
         Email = email;
         Address = address;
         _products = new HashSet<Product>(products);
+        
+        //apply reference back to product
+        foreach (var product in _products)
+        {
+            product.AddSupplier(this);
+        }
+        
         ObjectStore.Add(this);
     }
 
@@ -56,7 +63,8 @@ public class Supplier
 
     public void AddProductSupplied(Product product)
     {
-        if (product.GetSuppliers().Contains(this)) return;
+        //if (product.GetSuppliers().Contains(this)) return;
+        if (_products.Contains(product)) return;
         _products.Add(product);
         product.AddSupplier(this);
     }
@@ -64,7 +72,7 @@ public class Supplier
     public void RemoveProduct(Product product){
         if (!_products.Contains(product)) return;
         if (_products.Count == 1) throw new ArgumentException("ProductsSupplied count must be at least one.");
-        
+
         _products.Remove(product);
         product.RemoveSupplier(this);
     }

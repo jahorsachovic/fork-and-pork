@@ -61,6 +61,7 @@ public class Restaurant
 
     public void AddReport(Report report)
     {
+        if(report.GetRestaurant() != this) throw new ArgumentException("Cannot assign report to another restaurant.");
         _reports.Add(report);
     }
     
