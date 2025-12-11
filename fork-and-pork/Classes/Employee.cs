@@ -155,11 +155,11 @@ public class Employee
     }
 
     // Associations
-    private HashSet<Vacation> _vacations; 
+    private List<Vacation> _vacations; 
 
-    public HashSet<Vacation> GetVacations()
+    public List<Vacation> GetVacations()
     {
-        return new HashSet<Vacation>(_vacations);
+        return new List<Vacation>(_vacations);
     }
 
     public void AddVacation(Vacation vacation)
@@ -270,7 +270,7 @@ public class Employee
             ? new HashSet<Employee>()
             : new HashSet<Employee>(supervisedEmployees);
         _supervisor = supervisor;
-        _vacations = new HashSet<Vacation>();
+        _vacations = new List<Vacation>();
         SetRestaurant(restaurant);
         ObjectStore.Add<Employee>(this);
     }
