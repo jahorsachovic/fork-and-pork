@@ -1,10 +1,8 @@
-using System.Runtime.CompilerServices;
-
 namespace fork_and_pork.Classes;
 
 using System.ComponentModel.DataAnnotations;
 
-public class DineInRestaurant : Restaurant
+public class DineInService
 {
     private static float _tipTax = 0.1f;
 
@@ -21,8 +19,7 @@ public class DineInRestaurant : Restaurant
         }
     }
 
-    public DineInRestaurant() : base()
+    public DineInService()
     {
-        ObjectStore.Add(this);
     }
 }

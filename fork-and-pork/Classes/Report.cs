@@ -54,47 +54,55 @@ public class Report
     }
 
     public Grade Grade { get; set; }
-    
+
     // Associations
 
     private Restaurant _restaurant;
-    private Inspector _inspector;
+    private Employee _employee;
 
     public Restaurant GetRestaurant()
     {
         return _restaurant;
     }
 
-    public Inspector GetInspector()
+    public Employee GetInspector()
     {
-        return _inspector;
+        return _employee;
     }
-    
-    public static Report SubmitReport(Restaurant restaurant, Inspector inspector, DateTime startDate, DateTime finishDate, string notes, Grade grade)
+
+    public static Report SubmitReport(Restaurant restaurant, Employee employee, DateTime startDate, DateTime finishDate, string notes, Grade grade)
     {
-        return new Report(restaurant, inspector, startDate, finishDate, notes, grade);
+        return new Report(restaurant, employee, startDate, finishDate, notes, grade);
     }
 
     public void DeleteReport()
     {
         _restaurant.RemoveReport(this);
-        _inspector.RemoveReport(this);
+        if (_employee.Inspector is InspectorRole inspector)
+        {
+            inspector.RemoveReport(this);
+        }
         ObjectStore.Delete(this);
     }
 
-    private Report(Restaurant restaurant, Inspector inspector, DateTime startDate, DateTime finishDate, string notes, Grade grade)
+    private Report(Restaurant restaurant, Employee employee, DateTime startDate, DateTime finishDate, string notes, Grade grade)
     {
         _restaurant = restaurant;
-        _inspector = inspector;
+        _employee = employee;
         _restaurant.AddReport(this);
-        _inspector.AddReport(this);
+
+        if (employee.Inspector is not InspectorRole inspector)
+        {
+            throw new ArgumentException("Employee is not an inspector.");
+        }
+        inspector.AddReport(this);
 
         StartDate = startDate;
         FinishDate = finishDate;
         Notes = notes;
         Grade = grade;
         ObjectStore.Add(this);
-        
+
     }
 
 }

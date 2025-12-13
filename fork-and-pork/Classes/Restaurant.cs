@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
 
 namespace fork_and_pork.Classes;
 
@@ -19,7 +18,7 @@ public class Restaurant
             _address = value;
         }
     }
-    
+
     // Derived Attribute
     public int NumberOfEmployees => _employees.Count;
 
@@ -35,7 +34,7 @@ public class Restaurant
         }
     }
 
-    // Associations 
+    // Associations
     private Dictionary<string, Employee> _employees;
 
     public Dictionary<string, Employee> GetEmployees()
@@ -64,7 +63,7 @@ public class Restaurant
         if(report.GetRestaurant() != this) throw new ArgumentException("Cannot assign report to another restaurant.");
         _reports.Add(report);
     }
-    
+
     public void RemoveReport(Report report)
     {
         _reports.Remove(report);
@@ -74,7 +73,7 @@ public class Restaurant
     {
         return new List<Report>(_reports);
     }
-    
+
     public Restaurant()
     {
         Address = new Address();
@@ -82,5 +81,31 @@ public class Restaurant
         _employees = new Dictionary<string, Employee>();
         _reports = new List<Report>();
         ObjectStore.Add<Restaurant>(this);
+    }
+
+
+    public DineInService? DineIn { get; private set; }
+    public DeliveryService? Delivery { get; private set; }
+
+    public void EnableDineIn()
+    {
+        if (DineIn != null) return; // Already enabled
+        DineIn = new DineInService();
+    }
+
+    public void EnableDelivery(float tax, float radius)
+    {
+        if (Delivery != null) return; // Already enabled
+        Delivery = new DeliveryService(tax, radius);
+    }
+
+    public void DisableDineIn()
+    {
+        DineIn = null;
+    }
+
+    public void DisableDelivery()
+    {
+        Delivery = null;
     }
 }

@@ -86,6 +86,52 @@ public class ClassesTests
     }
 
     [Test]
+    public void TestEmployeeRolesMutualExclusion()
+    {
+        e1.AddManagerRole();
+        Assert.That(e1.Manager, Is.Not.Null);
+        Assert.That(e1.Inspector, Is.Null);
+        Assert.Throws<InvalidOperationException>(() => e1.AddManagerRole());
+
+        e1.AddInspectorRole(42);
+        Assert.That(e1.Manager, Is.Null);
+        Assert.That(e1.Inspector, Is.Not.Null);
+        Assert.That(e1.Inspector.LicenseId, Is.EqualTo(42));
+        Assert.Throws<InvalidOperationException>(() => e1.AddInspectorRole(43));
+    }
+
+    [Test]
+    public void TestInspectorRoleRequiredForReport()
+    {
+        var emp = Employee.Add(
+            "Bob", "Builder", DateTime.Now.AddYears(-25), "+48123456780",
+            "bob@builder.com", Occupation.Janitor, 5000m, r1);
+
+        Assert.Throws<ArgumentException>(() =>
+            Report.SubmitReport(r1, emp, DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1), "note", Grade.Ok));
+    }
+
+    [Test]
+    public void TestInspectorRoleReportLifecycle()
+    {
+        var inspectorEmp = Employee.Add(
+            "Alex", "Smith", DateTime.Now.AddYears(-30), "+48111111111",
+            "alex.smith@test.com", Occupation.Chief, 9000m, r1);
+        inspectorEmp.AddInspectorRole(12345);
+
+        var report = Report.SubmitReport(r1, inspectorEmp, DateTime.Now.AddDays(-7), DateTime.Now.AddDays(-6), "notes", Grade.Great);
+
+        Assert.That(inspectorEmp.Inspector, Is.Not.Null);
+        Assert.That(inspectorEmp.Inspector.LicenseId, Is.EqualTo(12345));
+        Assert.That(inspectorEmp.Inspector.GetReports(), Does.Contain(report));
+        Assert.That(r1.GetReports(), Does.Contain(report));
+
+        report.DeleteReport();
+        Assert.That(inspectorEmp.Inspector.GetReports(), Does.Not.Contain(report));
+        Assert.That(r1.GetReports(), Does.Not.Contain(report));
+    }
+
+    [Test]
     public void TestMenuItem()
     {
         MenuItem mi = new MenuItem("Item1", 200, new decimal(7.99));
@@ -135,7 +181,7 @@ public class ClassesTests
     [Test]
     public void TestDineInTaxException()
     {
-        Exception ex = Assert.Throws<ValidationException>(() => DineInRestaurant.TipTax = 1000);
+        Exception ex = Assert.Throws<ValidationException>(() => DineInService.TipTax = 1000);
         Assert.That(ex.Message, Is.EqualTo("TipTax must be between 0 and 1."));
     }
 
@@ -153,17 +199,28 @@ public class ClassesTests
     [Test]
     public void TestDineInRestaurant()
     {
-        Assert.That(DineInRestaurant.TipTax, Is.EqualTo(0.1f));
-        DineInRestaurant.TipTax = 0.2f;
-        Assert.That(DineInRestaurant.TipTax, Is.EqualTo(0.2f));
+        Assert.That(DineInService.TipTax, Is.EqualTo(0.1f));
+        DineInService.TipTax = 0.2f;
+        Assert.That(DineInService.TipTax, Is.EqualTo(0.2f));
     }
 
     [Test]
     public void TestDeliveryRestaurant()
     {
-        DeliveryRestaurant r = new DeliveryRestaurant(0.2f, 4f);
-        Assert.That(r.DeliveryTax, Is.EqualTo(0.2f));
-        Assert.That(r.DeliveryRadius, Is.EqualTo(4f));
+        r1.EnableDelivery(0.2f, 4f);
+        Assert.That(r1.Delivery.DeliveryTax, Is.EqualTo(0.2f));
+        Assert.That(r1.Delivery.DeliveryRadius, Is.EqualTo(4f));
+        r1.DisableDelivery();
+    }
+
+    [Test]
+    public void TestDineInServiceToggle()
+    {
+        Assert.That(r1.DineIn, Is.Null);
+        r1.EnableDineIn();
+        Assert.That(r1.DineIn, Is.Not.Null);
+        r1.DisableDineIn();
+        Assert.That(r1.DineIn, Is.Null);
     }
 
     // Complex Attribute
