@@ -135,7 +135,7 @@ public class ClassesTests
     [Test]
     public void TestDineInTaxException()
     {
-        Exception ex = Assert.Throws<ValidationException>(() => DineInRestaurant.TipTax = 1000);
+        Exception ex = Assert.Throws<ValidationException>(() => DineInService.TipTax = 1000);
         Assert.That(ex.Message, Is.EqualTo("TipTax must be between 0 and 1."));
     }
 
@@ -153,17 +153,18 @@ public class ClassesTests
     [Test]
     public void TestDineInRestaurant()
     {
-        Assert.That(DineInRestaurant.TipTax, Is.EqualTo(0.1f));
-        DineInRestaurant.TipTax = 0.2f;
-        Assert.That(DineInRestaurant.TipTax, Is.EqualTo(0.2f));
+        Assert.That(DineInService.TipTax, Is.EqualTo(0.1f));
+        DineInService.TipTax = 0.2f;
+        Assert.That(DineInService.TipTax, Is.EqualTo(0.2f));
     }
 
     [Test]
     public void TestDeliveryRestaurant()
     {
-        DeliveryRestaurant r = new DeliveryRestaurant(0.2f, 4f);
-        Assert.That(r.DeliveryTax, Is.EqualTo(0.2f));
-        Assert.That(r.DeliveryRadius, Is.EqualTo(4f));
+        r1.EnableDelivery(0.2f, 4f);
+        Assert.That(r1.Delivery.DeliveryTax, Is.EqualTo(0.2f));
+        Assert.That(r1.Delivery.DeliveryRadius, Is.EqualTo(4f));
+        r1.DisableDelivery();
     }
 
     // Complex Attribute
