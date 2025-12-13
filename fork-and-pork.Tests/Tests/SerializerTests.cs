@@ -54,11 +54,12 @@ public class SerializerTests
             "Wonderland", DateTime.Now.AddYears(-20), "+48797677123",
             "alice@gmail.com", Occupation.Cook, 12000.0m, r1);
 
-        Inspector i1 = new Inspector(
+        Employee i1 = Employee.Add(
             "Joe",
             "Doe", DateTime.Now.AddYears(-35), "+48797777123",
-            "joeDoe@gmail.com", Occupation.Chief, 25000.0m, r1, 125645645
+            "joeDoe@gmail.com", Occupation.Chief, 25000.0m, r1
         );
+        i1.AddInspectorRole(125645645);
 
         // foreach (var pair in r1.GetEmployees())
         // {
@@ -83,7 +84,6 @@ public class SerializerTests
         Assert.That(i1.ToString(), Is.EqualTo(loadedEmployees[2].ToString()));
         Assert.That(r1.ToString(), Is.EqualTo(loadedRestaurants[0].ToString()));
 
-        
         loadedEmployees[0].PhoneNumber = "+48797677123";
     }
 
