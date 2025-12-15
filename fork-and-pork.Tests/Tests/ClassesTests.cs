@@ -17,7 +17,7 @@ public class ClassesTests
     [SetUp]
     public void SetUp()
     {
-        r1 = new Restaurant
+        r1 = new OwnedRestaurant(500_000)
         {
             //changed e1.Email to e1.Email.Address
             //_e = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
@@ -109,6 +109,33 @@ public class ClassesTests
 
         Assert.Throws<ArgumentException>(() =>
             Report.SubmitReport(r1, emp, DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1), "note", Grade.Ok));
+    }
+
+    [Test]
+    public void TestOwnedRestaurant()
+    {
+        var owned = new OwnedRestaurant(100_000);
+
+        Assert.That(owned.AssetsValue, Is.EqualTo(100_000));
+
+        owned.Address = new Address("Poland", "Warsaw", "Main St", "00-001", "1");
+        Assert.That(owned.Address.City, Is.EqualTo("Warsaw"));
+
+        Assert.That(owned, Is.InstanceOf<Restaurant>());
+    }
+
+    [Test]
+    public void TestFranchisedRestaurant()
+    {
+        var franchised = new FranchisedRestaurant(0.05f, "Big Corp LLC");
+
+        Assert.That(franchised.RoyaltyPercent, Is.EqualTo(0.05f));
+        Assert.That(franchised.FranchiseOwner, Is.EqualTo("Big Corp LLC"));
+
+        franchised.EnableDineIn();
+        Assert.That(franchised.DineIn, Is.Not.Null);
+
+        Assert.That(franchised, Is.InstanceOf<Restaurant>());
     }
 
     [Test]

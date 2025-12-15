@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
-using System.Runtime.InteropServices.JavaScript;
 using NUnit.Framework;
 
 namespace fork_and_pork.Tests.Tests;
@@ -19,7 +16,7 @@ public class SerializerTests
     {
         ObjectStore.Clear();
 
-        r1 = new Restaurant()
+        r1 = new OwnedRestaurant(500_000)
         {
             //Employees = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
             WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
@@ -73,7 +70,7 @@ public class SerializerTests
         ObjectStore.Load("test-data.json");
 
         List<Employee> loadedEmployees = ObjectStore.GetObjectList<Employee>();
-        List<Restaurant> loadedRestaurants = ObjectStore.GetObjectList<Restaurant>();
+        List<OwnedRestaurant> loadedRestaurants = ObjectStore.GetObjectList<OwnedRestaurant>();
 
 
         Assert.That(e1.ToString(), Is.EqualTo(loadedEmployees[0].ToString()));

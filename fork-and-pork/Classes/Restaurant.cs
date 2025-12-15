@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace fork_and_pork.Classes;
 
-public class Restaurant
+public abstract class Restaurant
 {
     private Address _address;
 
@@ -80,7 +80,6 @@ public class Restaurant
         WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>();
         _employees = new Dictionary<string, Employee>();
         _reports = new List<Report>();
-        ObjectStore.Add<Restaurant>(this);
     }
 
 

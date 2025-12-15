@@ -19,7 +19,7 @@ public class AssociationsTests
     [SetUp]
     public void SetUp()
     {
-        r1 = new Restaurant
+        r1 = new OwnedRestaurant(500_000)
         {
             //changed e1.Email to e1.Email.Address
             //_e = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
@@ -289,7 +289,7 @@ public class AssociationsTests
     [Test]
     public void TestRestaurantEmployeeSetters()
     {
-        Restaurant r2 = new Restaurant();
+        Restaurant r2 = new OwnedRestaurant(500_000);
         Assert.That(r1.GetEmployees().Count == 3);
         Assert.That(r2.GetEmployees().Count == 0);
 
@@ -312,7 +312,7 @@ public class AssociationsTests
         Assert.That(r1.GetEmployees().ContainsKey(emp1.Email.Address));
         Assert.That(emp1.GetRestaurant() == r1);
 
-        Restaurant r2 = new Restaurant();
+        Restaurant r2 = new OwnedRestaurant(500_000);
         emp1.SetRestaurant(r2);
 
         Assert.That(!r1.GetEmployees().ContainsKey(emp1.Email.Address));
@@ -359,7 +359,7 @@ public class AssociationsTests
     {
         Report rep1 = Report.SubmitReport(r1, emp3, DateTime.Now.AddDays(-7), DateTime.Now, "Note", Grade.Great);
 
-        Restaurant r2 = new Restaurant();
+        Restaurant r2 = new OwnedRestaurant(500_000);
 
         var i2 = Employee.Add(
             "Alex", "Notwonderland", DateTime.Now.AddYears(-35), "+48123456789",
