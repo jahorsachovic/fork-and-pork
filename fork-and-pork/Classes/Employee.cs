@@ -40,10 +40,56 @@ public class Vacation
 
 public class Employee
 {
+    // Roles
+    public ManagerRole? Manager { get; private set; }
+    public InspectorRole? Inspector { get; private set; }
+
+    public void AddManagerRole()
+    {
+        if (Manager != null)
+        {
+            throw new InvalidOperationException("Employee is already a Manager.");
+        }
+
+        if (Inspector != null)
+        {
+            RemoveInspectorRole();
+        }
+        Manager = new ManagerRole(this);
+    }
+    public void RemoveManagerRole()
+    {
+        if (Manager == null) return;
+        Manager = null;
+    }
+
+    public void AddInspectorRole(uint licenseId)
+    {
+        if (Inspector != null)
+        {
+            throw new InvalidOperationException("Employee is already an Inspector.");
+        }
+
+        if (Manager != null)
+        {
+            RemoveManagerRole();
+        }
+        Inspector = new InspectorRole(this, licenseId);
+    }
+
+    public void RemoveInspectorRole()
+    {
+        if (Inspector == null) return;
+        Inspector = null;
+    }
+
     private string _name;
 
     public static void DeleteEmployee(Employee emp)
     {
+        emp.RemoveManagerRole();
+        emp.RemoveInspectorRole();
+
         foreach (var vac in emp._vacations) emp.DeleteVacation(vac);
         ObjectStore.Delete(emp);
     }
@@ -155,7 +201,7 @@ public class Employee
     }
 
     // Associations
-    private List<Vacation> _vacations; 
+    private List<Vacation> _vacations;
 
     public List<Vacation> GetVacations()
     {
@@ -241,7 +287,7 @@ public class Employee
     {
         if (_restaurant == restaurant) return;
         if(_restaurant != null) RemoveFromRestaurant();
-        
+
         _restaurant = restaurant;
         _restaurant.AddEmployee(this);
     }

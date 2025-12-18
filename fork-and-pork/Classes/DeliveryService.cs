@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace fork_and_pork.Classes;
 
-public class DeliveryRestaurant : Restaurant
+public class DeliveryService
 {
     private float _deliveryTax;
-    
+
     [Required]
     [Range(0f, 1f, ErrorMessage = "DeliveryTax must be between 0 and 1.")]
     public float DeliveryTax
@@ -32,11 +32,14 @@ public class DeliveryRestaurant : Restaurant
         }
     }
 
-
-    public DeliveryRestaurant(float deliveryTax, float deliveryRadius) : base()
+    public DeliveryService(float deliveryTax, float deliveryRadius)
     {
         DeliveryTax = deliveryTax;
         DeliveryRadius = deliveryRadius;
-        ObjectStore.Add(this);
+    }
+
+    public void Delete()
+    {
+        ObjectStore.Delete(this);
     }
 }

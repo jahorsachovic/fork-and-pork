@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
-using System.Runtime.InteropServices.JavaScript;
 using NUnit.Framework;
 
 namespace fork_and_pork.Tests.Tests;
@@ -19,7 +16,7 @@ public class SerializerTests
     {
         ObjectStore.Clear();
 
-        r1 = new Restaurant()
+        r1 = new OwnedRestaurant(500_000)
         {
             //Employees = new Dictionary<string, Employee>() { { e1.Email.Address, e1 }, { e2.Email.Address, e2 } },
             WorkingHours = new Dictionary<DayOfWeek, (TimeOnly, TimeOnly)>()
@@ -54,11 +51,12 @@ public class SerializerTests
             "Wonderland", DateTime.Now.AddYears(-20), "+48797677123",
             "alice@gmail.com", Occupation.Cook, 12000.0m, r1);
 
-        Inspector i1 = new Inspector(
+        Employee i1 = Employee.Add(
             "Joe",
             "Doe", DateTime.Now.AddYears(-35), "+48797777123",
-            "joeDoe@gmail.com", Occupation.Chief, 25000.0m, r1, 125645645
+            "joeDoe@gmail.com", Occupation.Chief, 25000.0m, r1
         );
+        i1.AddInspectorRole(125645645);
 
         // foreach (var pair in r1.GetEmployees())
         // {
@@ -72,7 +70,7 @@ public class SerializerTests
         ObjectStore.Load("test-data.json");
 
         List<Employee> loadedEmployees = ObjectStore.GetObjectList<Employee>();
-        List<Restaurant> loadedRestaurants = ObjectStore.GetObjectList<Restaurant>();
+        List<OwnedRestaurant> loadedRestaurants = ObjectStore.GetObjectList<OwnedRestaurant>();
 
 
         Assert.That(e1.ToString(), Is.EqualTo(loadedEmployees[0].ToString()));
@@ -83,7 +81,6 @@ public class SerializerTests
         Assert.That(i1.ToString(), Is.EqualTo(loadedEmployees[2].ToString()));
         Assert.That(r1.ToString(), Is.EqualTo(loadedRestaurants[0].ToString()));
 
-        
         loadedEmployees[0].PhoneNumber = "+48797677123";
     }
 
