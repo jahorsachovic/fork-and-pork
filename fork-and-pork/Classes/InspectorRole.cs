@@ -29,7 +29,7 @@ public class InspectorRole
 
     public void AddReport(Report report)
     {
-        if(report.GetInspector() != _parent) throw new ArgumentException("Cannot assign report to another inspector.");
+        if (report.GetInspector() != _parent) throw new ArgumentException("Cannot assign report to another inspector.");
         _reports.Add(report);
     }
 
@@ -43,5 +43,10 @@ public class InspectorRole
         _parent = parent;
         _reports = new List<Report>();
         LicenseId = licenseId;
+    }
+
+    public void Delete()
+    {
+        ObjectStore.Delete(this);
     }
 }
