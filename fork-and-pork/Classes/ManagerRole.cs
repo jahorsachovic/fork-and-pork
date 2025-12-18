@@ -1,10 +1,16 @@
 namespace fork_and_pork.Classes;
 
-public class ManagerRole{
+public class ManagerRole
+{
     private Employee _parent;
 
     public ManagerRole(Employee parent)
     {
         _parent = parent;
+    }
+
+    public void Delete()
+    {
+        ObjectStore.Delete(this);
     }
 }

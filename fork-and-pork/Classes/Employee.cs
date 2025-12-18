@@ -55,11 +55,14 @@ public class Employee
         {
             RemoveInspectorRole();
         }
+
         Manager = new ManagerRole(this);
     }
+
     public void RemoveManagerRole()
     {
         if (Manager == null) return;
+        Manager.Delete();
         Manager = null;
     }
 
@@ -74,12 +77,14 @@ public class Employee
         {
             RemoveManagerRole();
         }
+
         Inspector = new InspectorRole(this, licenseId);
     }
 
     public void RemoveInspectorRole()
     {
         if (Inspector == null) return;
+        Inspector.Delete();
         Inspector = null;
     }
 
@@ -286,7 +291,7 @@ public class Employee
     public void SetRestaurant(Restaurant restaurant)
     {
         if (_restaurant == restaurant) return;
-        if(_restaurant != null) RemoveFromRestaurant();
+        if (_restaurant != null) RemoveFromRestaurant();
 
         _restaurant = restaurant;
         _restaurant.AddEmployee(this);
