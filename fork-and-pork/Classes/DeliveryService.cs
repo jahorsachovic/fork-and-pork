@@ -37,4 +37,9 @@ public class DeliveryService
         DeliveryTax = deliveryTax;
         DeliveryRadius = deliveryRadius;
     }
+
+    public void Delete()
+    {
+        ObjectStore.Delete(this);
+    }
 }

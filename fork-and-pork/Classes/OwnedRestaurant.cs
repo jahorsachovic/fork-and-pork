@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic.FileIO;
+
 namespace fork_and_pork.Classes;
 
 public class OwnedRestaurant : Restaurant
@@ -9,5 +11,11 @@ public class OwnedRestaurant : Restaurant
     {
         AssetsValue = assetsValue;
         ObjectStore.Add<OwnedRestaurant>(this);
+    }
+
+    public void Delete()
+    {
+        ObjectStore.Delete(this);
+        DeleteRestaurant();
     }
 }

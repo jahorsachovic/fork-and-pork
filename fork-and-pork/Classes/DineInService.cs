@@ -22,4 +22,9 @@ public class DineInService
     public DineInService()
     {
     }
+
+    public void Delete()
+    {
+        ObjectStore.Delete(this);
+    }
 }

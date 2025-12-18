@@ -12,4 +12,10 @@ public class FranchisedRestaurant : Restaurant
         FranchiseOwner = franchiseOwner;
         ObjectStore.Add<FranchisedRestaurant>(this);
     }
+
+    public void Delete()
+    {
+        ObjectStore.Delete(this);
+        DeleteRestaurant();
+    }
 }

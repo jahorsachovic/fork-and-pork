@@ -100,11 +100,22 @@ public abstract class Restaurant
 
     public void DisableDineIn()
     {
+        if (DineIn == null) return;
+        DineIn.Delete();
         DineIn = null;
     }
 
     public void DisableDelivery()
     {
+        if (Delivery == null) return;
+        Delivery.Delete();
         Delivery = null;
+    }
+
+    public void DeleteRestaurant()
+    {
+        DisableDineIn();
+        DisableDelivery();
+        ObjectStore.Delete(this);
     }
 }
