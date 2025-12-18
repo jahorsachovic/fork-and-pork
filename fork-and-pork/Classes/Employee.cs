@@ -87,6 +87,9 @@ public class Employee
 
     public static void DeleteEmployee(Employee emp)
     {
+        emp.RemoveManagerRole();
+        emp.RemoveInspectorRole();
+
         foreach (var vac in emp._vacations) emp.DeleteVacation(vac);
         ObjectStore.Delete(emp);
     }
